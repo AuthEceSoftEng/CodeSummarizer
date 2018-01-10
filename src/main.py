@@ -40,10 +40,9 @@ parser.add_argument('--pkg_start', type=str, required=False, help='Package start
 parser.add_argument('--vectorizer', '-v', type=str, required=True, help='The vectorizer to be used. ' +
                     'Available options are \'tfidf\' and \'lda\'')
 parser.add_argument('--n_clusters', '-n', type=int, required=True, help='The number of clusters')
-parser.add_argument('--n_topics', '-t', type=int, required=False, help='The number of topics')
-parser.add_argument('--ldepth', '-l', type=int, required=True, help='The label depth of directories.')
+parser.add_argument('--ldepth', '-l', type=int, required=True, help='The depth of the directories. (considered true labels)')
 parser.add_argument('--search', '-s', action='store_true', help='Enable search of tags for \'good\' clusters')
-parser.add_argument('--verbose', '-V', action='store_true', help='Show output on screen (alt saved in log file)')
+parser.add_argument('--verbose', '-V', action='store_true', help='Show output on screen (alt only saved in log file)')
 # Parse given arguments.
 args = parser.parse_args()
 
@@ -100,8 +99,6 @@ logging.info('Finished preprocessing {0:.4f}s'.format(time()-t0))
 # Choose appropriate vectorizer and initialize
 if args.vectorizer == 'tfidf':
     v = TfidfVect(b.corpus)
-elif args.vectorizer == 'lda':
-    v = LDAVect(b.corpus, args.n_topics)
 elif args.vectorizer == 'count':
     v = CountVect(b.corpus)
 else:

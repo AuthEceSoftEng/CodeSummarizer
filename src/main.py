@@ -28,7 +28,9 @@ from clusterer.km_clusterer import KMClust
 from clusterer.lda_clusterer import LDAClust
 
 from optimizer.optimizer import Optimizer
-from presenter.package_distribution_heatmap import (generate_heatmap, create_wordclouds)
+
+from presenter.presenter import create_wordclouds
+from presenter.package_distribution_heatmap import generate_heatmap
 
 from searcher.official_googler import OfficialGoogler
 

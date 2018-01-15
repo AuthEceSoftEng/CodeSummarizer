@@ -31,3 +31,4 @@ src/tags
 .idea
 dataset/*
 logs/*
+output/*

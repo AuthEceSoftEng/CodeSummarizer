@@ -130,3 +130,14 @@ class KMClust(AbsClust):
                 logger.info('Cluster {}: {}'.format(index, ' '.join(clust)))
 
         return top_terms
+
+    def export_csv_topic_word(self):
+        tt_dict = {}
+        order_centroids = self.cluster_centers.argsort()[:, ::-1]
+        for i in range(len(self.cluster_centers)):
+            tt_dict['Topic_'+str(i)] = [self.vect.feature_names[ind]
+                                        for ind in order_centroids[i, :10]]
+        df = pd.DataFrame(tt_dict)
+        file_name = self.name + '_' + self.vect.name + '_' + str(self.n_clusters) + '.csv'
+        df.transpose().to_csv('../output/topic_word_' + file_name, sep=';')
+        return file_name

@@ -82,11 +82,15 @@ class LDAClust(AbsClust):
     def gen_labels(self):
         return np.argmax(self.lda_vec_data, axis=1)
 
-    def export_csv_topic_word(self):
+    def export_csv_topic_word(self, freq=False):
         tt_dict = {}
-        for t_idx, topic in enumerate(self.lda_topic_word):
-            tt_dict['Topic_'+str(t_idx)] = [str(self.vect.feature_names[i]) + '=' +
-                                            str(topic[i]) for i in topic.argsort()[:-10 - 1:-1]]
+        if freq:
+            for t_idx, topic in enumerate(self.lda_topic_word):
+                tt_dict['Topic_'+str(t_idx)] = [str(self.vect.feature_names[i]) + '=' +
+                                                str(topic[i]) for i in topic.argsort()[:-10 - 1:-1]]
+        else:
+            for t_idx, topic in enumerate(self.lda_topic_word):
+                tt_dict['Topic_'+str(t_idx)] = [str(self.vect.feature_names[i]) for i in topic.argsort()[:-10 - 1:-1]]
         df = pd.DataFrame(tt_dict)
         file_name = self.name + '_' + self.vect.name + '_' + str(self.n_clusters) + '.csv'
         df.transpose().to_csv('../output/topic_word_' + file_name, sep=';')

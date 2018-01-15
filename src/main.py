@@ -119,12 +119,11 @@ else:
     sys.exit()
 
 logging.info('Clustering...')
-if (args.optimize is True):
+o = Optimizer()
+o.optimize(c, args.n_clusters, one_run=(not args.optimize))
 
-else:
-    c.cluster(n_clusters=args.n_clusters)
-    c.export_csv_doc_topic()
-    file_name = c.export_csv_topic_word()
-    generate_heatmap(file_name)
+c.export_csv_doc_topic()
+file_name = c.export_csv_topic_word()
+generate_heatmap(file_name)
 
 logging.info('Finished execution')

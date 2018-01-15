@@ -64,18 +64,18 @@ class LDAClust(AbsClust):
 
     def top_terms_per_cluster(self,  num=15, show=False, freq=False):
         top_terms = []
-        freq = []
+        frequency = []
         for topic_idx, topic in enumerate(self.lda_topic_word):
             top_terms.append([self.vect.feature_names[i]
                               for i in topic.argsort()[:-num - 1:-1]])
-            freq.append([topic[i]
-                         for i in topic.argsort()[:-num - 1:-1]])
+            frequency.append([topic[i]
+                              for i in topic.argsort()[:-num - 1:-1]])
             if show is True:
                 logger.info("Topic #%d: " % topic_idx +
                             " ".join([self.vect.feature_names[i]
                                      for i in topic.argsort()[:-num - 1:-1]]))
-        if freq == True:
-            return (top_terms, freq)
+        if freq is True:
+            return top_terms, freq
         else:
             return top_terms
 

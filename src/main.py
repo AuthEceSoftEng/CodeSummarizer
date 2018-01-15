@@ -42,6 +42,7 @@ parser.add_argument('--vectorizer', '-v', type=str, required=True, help='The vec
 parser.add_argument('--n_clusters', '-n', type=int, required=True, help='The number of clusters')
 parser.add_argument('--ldepth', '-l', type=int, required=True, help='The depth of the directories. (considered true labels)')
 parser.add_argument('--search', '-s', action='store_true', help='Enable search of tags for \'good\' clusters')
+parser.add_argument('--optimize', '-o', action='store_true', help='Run optimizer module from 10 to N_CLUSTERS')
 parser.add_argument('--verbose', '-V', action='store_true', help='Show output on screen (alt only saved in log file)')
 # Parse given arguments.
 args = parser.parse_args()

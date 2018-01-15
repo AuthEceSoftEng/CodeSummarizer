@@ -27,7 +27,7 @@ class Optimizer(object):
         logger.info('Clustered with {}. Overall purity: {}. Number of categories {}'.
                     format(clusterer.n_clusters, self.purities[clusterer.n_clusters],
                            self.topic_categories[clusterer.n_clusters]))
-        self.plot_current()
+
 
     def optimize(self, clusterer, n_clusters, one_run=False):
 
@@ -40,6 +40,7 @@ class Optimizer(object):
                 logger.info('Clustering with {} clusters...'.format(i))
                 clusterer.cluster(n_clusters=i)
                 self.examine(clusterer)
+                self.plot_current()
 
     def plot_current(self):
 

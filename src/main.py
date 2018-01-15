@@ -135,7 +135,8 @@ file_name = o.latest_clusterer.export_csv_topic_word()
 generate_heatmap(file_name)
 
 # Plot the Purities and Topic categories so far
-o.plot_current()
+if args.optimize:
+    o.plot_current()
 
 # Compute wordclouds for the latest clusterer
 og = OfficialGoogler()

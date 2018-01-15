@@ -1,4 +1,4 @@
-from presenter.presenter import Presenter
+from presenter.presenter import (calc_purity, calc_topic_categories)
 import logging
 
 logger = logging.getLogger('Optimizer')
@@ -13,16 +13,16 @@ class Optimizer(object):
 
     def examine(self, clusterer):
 
-        self.clusterers.append(clusterer.n_clusters)
-        p = Presenter()
-        self.overall_purity.append(p.purity(clusterer.labels_true, clusterer.labels_pred,
-                                            vectorizer=clusterer.vectorizer,
-                                            top_terms=clusterer.top_terms_per_cluster(show=False)))
+        self.clusters.append(clusterer.n_clusters)
+        self.overall_purity.append(calc_purity(clusterer.labels_true, clusterer.labels_pred,
+                                               vectorizer=clusterer.vectorizer,
+                                               top_terms=clusterer.top_terms_per_cluster(show=False)))
 
-        self.num_similar_topics.append(p.calc_similar_topics(clusterer.top_terms_per_cluster(), clusterer.vectorizer))
+        self.num_similar_topics.append(calc_topic_categories(clusterer.top_terms_per_cluster(), clusterer.vectorizer))
         logger.info('Clustered with {}. Overall purity: {}. Number of categories {}'.format(clusterer.n_clusters,
                                                                                             self.overall_purity[-1],
-                                                                                            self.num_similar_topics[-1]))
+                                                                                            self.num_similar_topics[-1])
+                    )
 
     def optimize(self, clusterer, n_clusters, one_run=False):
 

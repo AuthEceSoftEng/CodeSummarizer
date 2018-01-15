@@ -81,7 +81,7 @@ if os.path.isfile(cache_path) and args.reload_extraction is False:
     a.load(cache_path)
 else:
     logging.info('##########     EXTRACTING DATASET     ##########')
-    dataset_path = './dataset/raw/' + args.dataset
+    dataset_path = '../dataset/raw/' + args.dataset
     if not os.path.exists(dataset_path):
         sys.exit('Specified dataset not found in dataset folder. Aborting')
     a.clean_dataset(dataset_path)

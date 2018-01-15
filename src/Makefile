@@ -10,7 +10,10 @@ base-deps:
 	. $(VENV)/bin/activate && \
 	$(PIP) install -r requirements.txt
 
-setup: virtual-env base-deps
+setup: virtual-env base-deps fix-pytagcloud
+
+fix-pytagcloud: virtual-env base-deps
+	2to3 -w ${HOME}/.code_summarizer_venv/lib/python3.5/site-packages/pytagcloud
 
 update: virtual-env
 	. $(VENV)/bin/activate && \

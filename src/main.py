@@ -150,7 +150,6 @@ with open('../output/tags.csv', 'w', newline='') as csvfile:
 
 top_tags = {}
 topics = []
-topic_ids = []
 with open("../output/tags.csv") as infile:
     for line in infile:
         if line:
@@ -161,6 +160,8 @@ with open("../output/tags.csv") as infile:
                 term = l.split('=')[0]
                 top_tags[line[0]].append(term)
 
+tags = []
+topic_ids = []
 for topic in topics:
     if top_tags[topic]:
         tags.append(top_tags[topic][:5])

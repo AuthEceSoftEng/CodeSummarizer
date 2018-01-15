@@ -141,7 +141,7 @@ if args.optimize:
 # Compute wordclouds for the latest clusterer
 og = OfficialGoogler()
 tags = []
-with open('.../output/tags.csv', 'w', newline='') as csvfile:
+with open('../output/tags.csv', 'w', newline='') as csvfile:
     csv_writer = csv.writer(csvfile, delimiter=';', quotechar='|', quoting=csv.QUOTE_MINIMAL)
     for i in range(0, c.n_clusters):
         og.search(' '.join(c.top_terms_per_cluster(num=5)[i]) + ' ' + args.dataset, '../output/result{}.json'.format(i))

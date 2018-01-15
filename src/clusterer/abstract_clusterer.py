@@ -32,6 +32,6 @@ class AbsClust(object):
         lp = ['Topic_' + str(x) for x in self.labels_pred.tolist()]
         df = pd.DataFrame(dict(labels_true=self.labels_true, labels_pred=lp))
         file_name = self.name + '_' + self.vect.name + '_' + str(self.n_clusters) + '.csv'
-        df.to_csv('document_topic_' + file_name, sep=';')
+        df.to_csv('../output/document_topic_' + file_name, sep=';')
         return file_name
 

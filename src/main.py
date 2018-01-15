@@ -122,8 +122,8 @@ logging.info('Clustering...')
 o = Optimizer()
 o.optimize(c, args.n_clusters, one_run=(not args.optimize))
 
-c.export_csv_doc_topic()
-file_name = c.export_csv_topic_word()
+o.latest_clusterer.export_csv_doc_topic()
+file_name = o.latest_clusterer.export_csv_topic_word()
 generate_heatmap(file_name)
 
 logging.info('Finished execution')

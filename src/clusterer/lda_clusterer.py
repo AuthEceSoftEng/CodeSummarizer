@@ -89,5 +89,5 @@ class LDAClust(AbsClust):
                                             str(topic[i]) for i in topic.argsort()[:-10 - 1:-1]]
         df = pd.DataFrame(tt_dict)
         file_name = self.name + '_' + self.vect.name + '_' + str(self.n_clusters) + '.csv'
-        df.transpose().to_csv('topic_word_' + file_name, sep=';')
+        df.transpose().to_csv('../output/topic_word_' + file_name, sep=';')
         return file_name

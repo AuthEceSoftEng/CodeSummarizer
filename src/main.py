@@ -27,7 +27,7 @@ from clusterer.km_clusterer import KMClust
 from clusterer.lda_clusterer import LDAClust
 
 from optimizer.optimizer import Optimizer
-from analyzer.package_distribution_heatmap import generate_heatmap
+from presenter.package_distribution_heatmap import generate_heatmap
 
 
 parser = argparse.ArgumentParser()

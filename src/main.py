@@ -145,15 +145,26 @@ with open('../output/tags.csv', 'w', newline='') as csvfile:
     csv_writer = csv.writer(csvfile, delimiter=';', quotechar='|', quoting=csv.QUOTE_MINIMAL)
     for i in range(0, c.n_clusters):
         og.search(' '.join(c.top_terms_per_cluster(num=5)[i]) + ' ' + args.dataset, '../output/result{}.json'.format(i))
-        tags.append(og.fetch_tags('result{}.json'.format(i)))
-        csv_writer.writerow([str(i)] + [str(y)+'='+str(x) for (x,y) in tags[-1]])
+        tags.append(og.fetch_tags('../output/result{}.json'.format(i)))
+        csv_writer.writerow([str(i)] + [str(y)+'='+str(x) for (x, y) in tags[-1]])
 
-non_empty_tags = []
+top_tags = {}
+topics = []
 topic_ids = []
-for i in range(0, c.n_clusters):
-    if tags[i]:
-        non_empty_tags.append([x for (x, y) in tags[i]])
-        topic_ids.append(i)
+with open("../output/tags.csv") as infile:
+    for line in infile:
+        if line:
+            line = line.strip().split(';')
+            top_tags[line[0]] = []
+            topics.append(line[0])
+            for l in line[1:]:
+                term = l.split('=')[0]
+                top_tags[line[0]].append(term)
 
-create_wordclouds(non_empty_tags, topic_ids)
+for topic in topics:
+    if top_tags[topic]:
+        tags.append(top_tags[topic][:5])
+        topic_ids.append(topic)
+
+create_wordclouds(tags, topic_ids)
 logging.info('Finished execution')

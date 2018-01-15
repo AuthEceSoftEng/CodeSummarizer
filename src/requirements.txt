@@ -20,6 +20,7 @@ six
 pytagcloud
 networkx
 pygame
+simplejson
 
 ####
 # Needed for runtime:

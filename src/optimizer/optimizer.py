@@ -32,7 +32,7 @@ class Optimizer(object):
     def optimize(self, clusterer, n_clusters, one_run=False):
 
         if one_run is True:
-            logger.info('OneRun Enabled. Clustering with {} clusters...'.format(clusterer.n_clusters))
+            logger.info('OneRun Enabled. Clustering with {} clusters...'.format(n_clusters))
             clusterer.cluster(n_clusters=n_clusters)
             self.examine(clusterer)
         else:

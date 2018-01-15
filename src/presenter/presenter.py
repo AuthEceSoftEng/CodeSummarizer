@@ -72,8 +72,8 @@ def calc_topic_categories(top_terms, vectorizer):
 
     # Take cosine similarity between topics
     cos_dis = cosine_distances(v_weighted_top_terms)
-    Z = linkage(cos_dis, method='complete', metric='cosine')
+    z = linkage(cos_dis, method='complete', metric='cosine')
     t = 0.4
-    kappa = fcluster(Z, t)
+    kappa = fcluster(z, t)
     print('Num categories: {}'.format(len(set(kappa))))
     return len(set(kappa))

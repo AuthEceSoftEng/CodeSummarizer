@@ -30,3 +30,4 @@ src/*.png
 src/tags
 .idea
 dataset/*
+logs/*

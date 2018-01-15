@@ -28,3 +28,4 @@ src/main.log
 src/*.pickle
 src/*.png
 src/tags
+.idea

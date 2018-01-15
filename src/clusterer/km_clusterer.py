@@ -4,7 +4,7 @@ from __future__ import absolute_import
 from time import time
 import logging
 
-from sklearn.metrics.pairwise import cosine_similarity
+# from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.cluster import KMeans
 from sklearn import metrics
 

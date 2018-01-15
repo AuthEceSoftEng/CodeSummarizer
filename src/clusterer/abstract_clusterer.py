@@ -4,13 +4,13 @@ import pandas as pd
 
 class AbsClust(object):
 
-    def __init__(self, name, vect, labels_true):
+    def __init__(self, name, vectorizer, labels_true):
 
         self.name = name
         self.labels_true = labels_true
         self.labels_pred = None
 
-        self.vect = vect
+        self.vectorizer = vectorizer
 
         self.n_clusters = None
 

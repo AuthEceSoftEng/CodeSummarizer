@@ -21,14 +21,14 @@ class LDAClust(AbsClust):
     ----------
 
     labels_true : True labels to be used for metrics evaluation.
-    vect        : Object of type *Vect.
+    vectorizer  : Object of type *Vectorizer.
     '''
 
-    def __init__(self, vect, labels_true, max_iter=1000,
+    def __init__(self, vectorizer, labels_true, max_iter=1000,
                  learning_method='online', learning_offset=50.,
                  dtp=500, twp=.001):
 
-        super(LDAClust, self).__init__('LDA', vect, labels_true)
+        super(LDAClust, self).__init__('LDA', vectorizer, labels_true)
 
         self.labels_ = None
         self.max_iter = max_iter
@@ -53,7 +53,7 @@ class LDAClust(AbsClust):
         logger.info('Topic_word_prior(b) = {}'.format(0.001))
 
         t0 = time()
-        self.lda_vec_data = lda_clusterer.fit_transform(self.vect.vec_data)
+        self.lda_vec_data = lda_clusterer.fit_transform(self.vectorizer.vec_data)
         self.lda_topic_word = lda_clusterer.components_
         self.labels_pred = self.gen_labels()
         logger.info("Done in %0.3fs" % (time() - t0))
@@ -66,14 +66,11 @@ class LDAClust(AbsClust):
         top_terms = []
         frequency = []
         for topic_idx, topic in enumerate(self.lda_topic_word):
-            top_terms.append([self.vect.feature_names[i]
-                              for i in topic.argsort()[:-num - 1:-1]])
-            frequency.append([topic[i]
-                              for i in topic.argsort()[:-num - 1:-1]])
+            top_terms.append([self.vectorizer.feature_names[i] for i in topic.argsort()[:-num - 1:-1]])
+            frequency.append([topic[i] for i in topic.argsort()[:-num - 1:-1]])
             if show is True:
-                logger.info("Topic #%d: " % topic_idx +
-                            " ".join([self.vect.feature_names[i]
-                                     for i in topic.argsort()[:-num - 1:-1]]))
+                logger.info("Topic #%d: " % topic_idx + ' '.join([self.vectorizer.feature_names[i]
+                                                                  for i in topic.argsort()[:-num - 1:-1]]))
         if freq is True:
             return top_terms, freq
         else:
@@ -86,12 +83,13 @@ class LDAClust(AbsClust):
         tt_dict = {}
         if freq:
             for t_idx, topic in enumerate(self.lda_topic_word):
-                tt_dict['Topic_'+str(t_idx)] = [str(self.vect.feature_names[i]) + '=' +
+                tt_dict['Topic_'+str(t_idx)] = [str(self.vectorizer.feature_names[i]) + '=' +
                                                 str(topic[i]) for i in topic.argsort()[:-10 - 1:-1]]
         else:
             for t_idx, topic in enumerate(self.lda_topic_word):
-                tt_dict['Topic_'+str(t_idx)] = [str(self.vect.feature_names[i]) for i in topic.argsort()[:-10 - 1:-1]]
+                tt_dict['Topic_'+str(t_idx)] = [str(self.vectorizer.feature_names[i])
+                                                for i in topic.argsort()[:-10 - 1:-1]]
         df = pd.DataFrame(tt_dict)
-        file_name = self.name + '_' + self.vect.name + '_' + str(self.n_clusters) + '.csv'
+        file_name = self.name + '_' + self.vectorizer.name + '_' + str(self.n_clusters) + '.csv'
         df.transpose().to_csv('../output/topic_word_' + file_name, sep=';')
         return file_name

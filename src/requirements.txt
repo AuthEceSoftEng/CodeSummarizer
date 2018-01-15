@@ -1,0 +1,31 @@
+pip
+atlas
+pyqt5
+cython
+numpy
+scipy
+scikit-learn
+pandas
+gensim
+nltk
+ipython
+google-api-python-client
+matplotlib
+bs4
+urllib3[secure]
+prettyprint
+oauth2client==1.5.2
+certifi
+six
+pytagcloud
+networkx
+
+####
+# Needed for runtime:
+# nltk_corpora (download using nltk.download()): stopwords, wordnet
+####
+# Needed for the virtual environment setup:
+# python3tk
+# liblapack-dev libblas-dev
+# gfortran
+# libffi-dev

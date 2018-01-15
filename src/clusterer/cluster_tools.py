@@ -3,7 +3,7 @@ from sklearn.preprocessing import MinMaxScaler
 from sklearn.metrics.pairwise import euclidean_distances
 from sklearn.metrics import silhouette_score, silhouette_samples
 
-from grapher.graph_json import GraphJSON
+# from grapher.graph_json import GraphJSON
 
 import matplotlib.cm as cm
 import matplotlib.pyplot as plt

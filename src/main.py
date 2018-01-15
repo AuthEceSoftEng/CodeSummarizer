@@ -7,6 +7,7 @@ import argparse
 import logging
 import os.path
 import sys
+import csv
 from time import time, strftime
 
 import matplotlib
@@ -27,7 +28,9 @@ from clusterer.km_clusterer import KMClust
 from clusterer.lda_clusterer import LDAClust
 
 from optimizer.optimizer import Optimizer
-from presenter.package_distribution_heatmap import generate_heatmap
+from presenter.package_distribution_heatmap import (generate_heatmap, create_wordclouds)
+
+from searcher.official_googler import OfficialGoogler
 
 
 parser = argparse.ArgumentParser()
@@ -125,6 +128,29 @@ o.optimize(c, args.n_clusters, one_run=(not args.optimize))
 
 o.latest_clusterer.export_csv_doc_topic()
 file_name = o.latest_clusterer.export_csv_topic_word()
+
+# Generate the heatmap for the last clusterer
 generate_heatmap(file_name)
 
+# Plot the Purities and Topic categories so far
+o.plot_current()
+
+# Compute wordclouds for the latest clusterer
+og = OfficialGoogler()
+tags = []
+with open('.../output/tags.csv', 'w', newline='') as csvfile:
+    csv_writer = csv.writer(csvfile, delimiter=';', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+    for i in range(0, c.n_clusters):
+        og.search(' '.join(c.top_terms_per_cluster(num=5)[i]) + ' ' + args.dataset, '../output/result{}.json'.format(i))
+        tags.append(og.fetch_tags('result{}.json'.format(i)))
+        csv_writer.writerow([str(i)] + [str(y)+'='+str(x) for (x,y) in tags[-1]])
+
+non_empty_tags = []
+topic_ids = []
+for i in range(0, c.n_clusters):
+    if tags[i]:
+        non_empty_tags.append([x for (x, y) in tags[i]])
+        topic_ids.append(i)
+
+create_wordclouds(non_empty_tags, topic_ids)
 logging.info('Finished execution')

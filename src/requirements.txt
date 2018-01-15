@@ -19,6 +19,7 @@ certifi
 six
 pytagcloud
 networkx
+pygame
 
 ####
 # Needed for runtime:

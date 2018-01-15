@@ -13,9 +13,11 @@ class Optimizer(object):
     def __init__(self):
         self.purities = {}
         self.topic_categories = {}
+        self.latest_clusterer = None
 
     def examine(self, clusterer):
 
+        self.latest_clusterer = clusterer
         self.purities[clusterer.n_clusters] = calc_purity(clusterer.labels_true, clusterer.labels_pred,
                                                           vectorizer=clusterer.vectorizer,
                                                           top_terms=clusterer.top_terms_per_cluster(show=False))

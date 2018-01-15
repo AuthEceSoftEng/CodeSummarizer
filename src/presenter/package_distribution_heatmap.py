@@ -49,7 +49,7 @@ def generate_heatmap(file_name):
 
     # Read top terms for each topic
     top_terms = {}
-    with open("topic_word_" + file_name) as infile:
+    with open("../output/topic_word_" + file_name) as infile:
         for line in infile:
             if line:
                 line = line.strip().split(';')
@@ -65,7 +65,7 @@ def generate_heatmap(file_name):
     # Read data in a dict, so that data[package][topic] contains the number of classes
     # of the package that are in this topic.
     data = defaultdict(lambda: defaultdict(int))
-    with open("document_topic_" + file_name) as infile:
+    with open("../output/document_topic_" + file_name) as infile:
         next(infile)
         for line in infile:
             if line:
@@ -104,8 +104,8 @@ def generate_heatmap(file_name):
         plt.xlabel("Number of Topics", fontsize=10)
         plt.ylabel("Participation", fontsize=10)
         plt.subplots_adjust(left=0.15, bottom=0.15, right=None, top=0.9)
-        plt.savefig("topic_distribution_" + ttype + ".eps", format='eps')
-        plt.savefig("topic_distribution_" + ttype + ".pdf", format='pdf')
+        plt.savefig("../output/topic_distribution_" + ttype + ".eps", format='eps')
+        plt.savefig("../output/topic_distribution_" + ttype + ".pdf", format='pdf')
     plt.show()
     # exit()
 
@@ -113,7 +113,7 @@ def generate_heatmap(file_name):
 
     # for i, filename in enumerate(["document_topic_" + file_name.split('.')[0], "document_topic_" +
     #                                                                             file_name.split('.')[0] + "_gui"]):
-    for i, filename in enumerate(["document_topic_" + file_name.split('.')[0]]):
+    for i, filename in enumerate(["../output/document_topic_" + file_name.split('.')[0]]):
         participation_threshold = 0.02
 
         # Read data in a dict, so that data[package][topic] contains the number of classes
@@ -218,6 +218,6 @@ def generate_heatmap(file_name):
             box = ax.get_position()
             cbar.ax.set_position([cbox.x0 - 0.2065, cbox.y0 + 0.0245, cbox.width * 0.67, cbox.height])
             ax.set_position([box.x0 + 0.02, box.y0, box.width * 0.65, box.height * 1.065])
-        plt.savefig(filename + "_heatmap.eps", format='eps')
-        plt.savefig(filename + "_heatmap.pdf", format='pdf')
+        plt.savefig('../output/' + filename + "_heatmap.eps", format='eps')
+        plt.savefig('../output/' + filename + "_heatmap.pdf", format='pdf')
     plt.show()

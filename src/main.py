@@ -38,14 +38,14 @@ from searcher.official_googler import OfficialGoogler
 parser = argparse.ArgumentParser()
 parser.add_argument('--reload_extraction', action='store_true', help='force to redo the extraction of the dataset (do not use previous run)')
 parser.add_argument('--reload_preprocessing', action='store_true', help='force to redo the preprocessing on the extracted (do not use previous run)')
-parser.add_argument('--dataset', '-d', type=str, required=True, help='The folder contraining the dataset')
-parser.add_argument('--algorithm', '-a', type=str, required=True, help='The algorithm to be used for clustering. ' +
+parser.add_argument('dataset', type=str, help='The folder contraining the dataset')
+parser.add_argument('--algorithm', '-a', type=str, help='The algorithm to be used for clustering. ' +
                     'Available options are \'km\' and \'lda\'')
 parser.add_argument('--pkg_start', type=str, required=False, help='Package start to keep (useful for excluding certain subpackages of a project)')
-parser.add_argument('--vectorizer', '-v', type=str, required=True, help='The vectorizer to be used. ' +
+parser.add_argument('--vectorizer', '-v', type=str, help='The vectorizer to be used. ' +
                     'Available options are \'tfidf\' and \'count\'')
-parser.add_argument('--n_clusters', '-n', type=int, required=True, help='The number of clusters')
-parser.add_argument('--ldepth', '-l', type=int, required=True, help='The depth of the package structure to be used as ground truth labels')
+parser.add_argument('--n_clusters', '-n', type=int, help='The number of clusters')
+parser.add_argument('--ldepth', '-l', type=int, help='The depth of the package structure to be used as ground truth labels')
 parser.add_argument('--search', '-s', action='store_true', help='Enable search of tags for \'good\' clusters')
 parser.add_argument('--optimize', '-o', action='store_true', help='Run optimizer module from 10 to N_CLUSTERS')
 parser.add_argument('--verbose', '-V', action='store_true', help='Show output on screen (alt only saved in log file)')
@@ -71,17 +71,18 @@ if args.verbose is True:
 
 # Extract the classes from the dataset. Use cached version if available or not specified otherwise.
 logging.info('Using dataset {}'.format(args.dataset))
+dataset_name = args.dataset.split(os.sep)[-1]
 
 t0 = time()
 a = Extractor()
-cache_path = '../dataset/cache/' + args.dataset + '.pckl'
+cache_path = '../dataset/cache/' + dataset_name + '.pckl'
 
 if os.path.isfile(cache_path) and args.reload_extraction is False:
     logging.info('########## LOADING DATASET FROM CACHE ##########')
     a.load(cache_path)
 else:
     logging.info('##########     EXTRACTING DATASET     ##########')
-    dataset_path = '../dataset/raw/' + args.dataset
+    dataset_path = args.dataset
     if not os.path.exists(dataset_path):
         sys.exit('Specified dataset not found in dataset folder. Aborting')
     a.clean_dataset(dataset_path)
@@ -91,7 +92,7 @@ logging.info('Finished extracting {0:.4f}s'.format(time()-t0))
 
 # Preprocess extracted dataset. Use cached version if available or not specified otherwise.
 t0 = time()
-cache_path = '../dataset/cache/' + args.dataset + '_prep.pckl'
+cache_path = '../dataset/cache/' + dataset_name + '_prep.pckl'
 if os.path.isfile(cache_path) and (args.reload_preprocessing is False and args.reload_extraction is False):
     logging.info('########## LOADING PRERPOCESSED DATA FROM CACHE ##########')
     b = Preprocessor()
@@ -107,18 +108,28 @@ if args.vectorizer == 'tfidf':
     v = TfidfVect(b.corpus)
 elif args.vectorizer == 'count':
     v = CountVect(b.corpus)
+elif args.vectorizer is None:
+    logging.info('Using default Count vectorizer')
+    v = CountVect(b.corpus)
 else:
     logging.error('Vectorizer name not recognized. Exiting...')
     sys.exit()
 
 # Change label depth according to argument given by user. Purposely kept in main (instead of preprocessor to be able to
 # change without redoing the preprocessing)
-labels_true = change_label_depth(b.labels, depth=args.ldepth)
+if args.ldepth is None:
+    logging.info('Using default depth of 1')
+    labels_true = change_label_depth(b.labels, depth=1)
+else:
+    labels_true = change_label_depth(b.labels, depth=args.ldepth)
 
 # Choose appropriate clusterer and initialize.
 if args.algorithm == 'km':
     c = KMClust(v, labels_true)
 elif args.algorithm == 'lda':
+    c = LDAClust(v, labels_true)
+elif args.algorithm is None:
+    logging.info('Using default lda clusterer')
     c = LDAClust(v, labels_true)
 else:
     logging.error('Clusterer name not recognized. Exiting...')
@@ -126,7 +137,10 @@ else:
 
 logging.info('Clustering...')
 o = Optimizer()
-o.optimize(c, args.n_clusters, one_run=(not args.optimize))
+if args.n_clusters is not None:
+    o.optimize(c, args.n_clusters, one_run=(not args.optimize))
+else:
+    o.optimize(c, 200, one_run=(not args.optimize))
 
 o.latest_clusterer.export_csv_doc_topic()
 file_name = o.latest_clusterer.export_csv_topic_word()

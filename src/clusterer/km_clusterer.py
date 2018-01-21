@@ -118,11 +118,20 @@ class KMClust(AbsClust):
 
         return top_terms
 
-    def export_csv_topic_word(self):
+    def export_csv_topic_word(self, freq=True):
         tt_dict = {}
         order_centroids = self.cluster_centers.argsort()[:, ::-1]
-        for i in range(len(self.cluster_centers)):
-            tt_dict['Topic_'+str(i)] = [self.vectorizer.feature_names[ind] for ind in order_centroids[i, :10]]
+        print(self.cluster_centers)
+        print(order_centroids)
+
+        if freq:
+            for i in range(len(self.cluster_centers)):
+                tt_dict['Topic_'+str(i)] = [str(self.vectorizer.feature_names[ind]) + '=' +
+                                            str(self.cluster_centers[i][ind]) for ind in order_centroids[i, :10]]
+        else:
+            for i in range(len(self.cluster_centers)):
+                tt_dict['Topic_'+str(i)] = [self.vectorizer.feature_names[ind] for ind in order_centroids[i, :10]]
+
         df = pd.DataFrame(tt_dict)
         file_name = self.name + '_' + self.vectorizer.name + '_' + str(self.n_clusters) + '.csv'
         df.transpose().to_csv('../output/topic_word_' + file_name, sep=';')

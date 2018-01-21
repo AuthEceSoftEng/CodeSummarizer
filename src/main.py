@@ -38,7 +38,7 @@ from searcher.official_googler import OfficialGoogler
 parser = argparse.ArgumentParser()
 parser.add_argument('--reload_extraction', action='store_true', help='force to redo the extraction of the dataset (do not use previous run)')
 parser.add_argument('--reload_preprocessing', action='store_true', help='force to redo the preprocessing on the extracted (do not use previous run)')
-parser.add_argument('dataset', type=str, help='The folder contraining the dataset')
+parser.add_argument('DATASET', type=str, help='The folder contraining the dataset')
 parser.add_argument('--algorithm', '-a', type=str, help='The algorithm to be used for clustering. ' +
                     'Available options are \'km\' and \'lda\'')
 parser.add_argument('--pkg_start', type=str, required=False, help='Package start to keep (useful for excluding certain subpackages of a project)')
@@ -70,8 +70,8 @@ if args.verbose is True:
 
 
 # Extract the classes from the dataset. Use cached version if available or not specified otherwise.
-logging.info('Using dataset {}'.format(args.dataset))
-dataset_name = args.dataset.split(os.sep)[-1]
+logging.info('Using dataset {}'.format(args.DATASET))
+dataset_name = args.DATASET.split(os.sep)[-1]
 
 t0 = time()
 a = Extractor()
@@ -82,7 +82,7 @@ if os.path.isfile(cache_path) and args.reload_extraction is False:
     a.load(cache_path)
 else:
     logging.info('##########     EXTRACTING DATASET     ##########')
-    dataset_path = args.dataset
+    dataset_path = args.DATASET
     if not os.path.exists(dataset_path):
         sys.exit('Specified dataset not found in dataset folder. Aborting')
     a.clean_dataset(dataset_path)
@@ -159,7 +159,7 @@ if args.search:
     with open('../output/tags.csv', 'w', newline='') as csvfile:
         csv_writer = csv.writer(csvfile, delimiter=';', quotechar='|', quoting=csv.QUOTE_MINIMAL)
         for i in range(0, c.n_clusters):
-            og.search(' '.join(c.top_terms_per_cluster(num=5)[i]) + ' ' + args.dataset, '../output/result{}.json'.format(i))
+            og.search(' '.join(c.top_terms_per_cluster(num=5)[i]) + ' ' + dataset_name, '../output/result{}.json'.format(i))
             tags.append(og.fetch_tags('../output/result{}.json'.format(i)))
             csv_writer.writerow([str(i)] + [str(y)+'='+str(x) for (x, y) in tags[-1]])
 

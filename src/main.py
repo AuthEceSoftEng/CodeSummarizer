@@ -39,13 +39,13 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--reload_extraction', action='store_true', help='force to redo the extraction of the dataset (do not use previous run)')
 parser.add_argument('--reload_preprocessing', action='store_true', help='force to redo the preprocessing on the extracted (do not use previous run)')
 parser.add_argument('DATASET', type=str, help='The folder contraining the dataset')
-parser.add_argument('--algorithm', '-a', type=str, help='The algorithm to be used for clustering. ' +
+parser.add_argument('--algorithm', '-a', default='lda', type=str, help='The algorithm to be used for clustering. ' +
                     'Available options are \'km\' and \'lda\'')
 parser.add_argument('--pkg_start', type=str, required=False, help='Package start to keep (useful for excluding certain subpackages of a project)')
-parser.add_argument('--vectorizer', '-v', type=str, help='The vectorizer to be used. ' +
+parser.add_argument('--vectorizer', '-v', type=str, default='count', help='The vectorizer to be used. ' +
                     'Available options are \'tfidf\' and \'count\'')
-parser.add_argument('--n_clusters', '-n', type=int, help='The number of clusters')
-parser.add_argument('--ldepth', '-l', type=int, help='The depth of the package structure to be used as ground truth labels')
+parser.add_argument('--n_clusters', '-n', type=int, default='200', help='The number of clusters')
+parser.add_argument('--ldepth', '-l', type=int, default=1, help='The depth of the package structure to be used as ground truth labels')
 parser.add_argument('--search', '-s', action='store_true', help='Enable search of tags for \'good\' clusters')
 parser.add_argument('--optimize', '-o', action='store_true', help='Run optimizer module from 10 to N_CLUSTERS')
 parser.add_argument('--verbose', '-V', action='store_true', help='Show output on screen (alt only saved in log file)')
@@ -108,9 +108,6 @@ if args.vectorizer == 'tfidf':
     v = TfidfVect(b.corpus)
 elif args.vectorizer == 'count':
     v = CountVect(b.corpus)
-elif args.vectorizer is None:
-    logging.info('Using default Count vectorizer')
-    v = CountVect(b.corpus)
 else:
     logging.error('Vectorizer name not recognized. Exiting...')
     sys.exit()
@@ -128,19 +125,13 @@ if args.algorithm == 'km':
     c = KMClust(v, labels_true)
 elif args.algorithm == 'lda':
     c = LDAClust(v, labels_true)
-elif args.algorithm is None:
-    logging.info('Using default lda clusterer')
-    c = LDAClust(v, labels_true)
 else:
     logging.error('Clusterer name not recognized. Exiting...')
     sys.exit()
 
 logging.info('Clustering...')
 o = Optimizer()
-if args.n_clusters is not None:
-    o.optimize(c, args.n_clusters, one_run=(not args.optimize))
-else:
-    o.optimize(c, 200, one_run=(not args.optimize))
+o.optimize(c, args.n_clusters, one_run=(not args.optimize))
 
 o.latest_clusterer.export_csv_doc_topic()
 file_name = o.latest_clusterer.export_csv_topic_word()

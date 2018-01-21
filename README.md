@@ -20,39 +20,40 @@ Summarizing Software Functionality from Source Code
    to get into the python virtual environment
 
 ## Usage:
-```shell
-main.py [-h] [--reload_extraction] [--reload_preprocessing] --dataset
-               DATASET --algorithm ALGORITHM [--pkg_start PKG_START]
-               --vectorizer VECTORIZER --n_clusters N_CLUSTERS --ldepth LDEPTH
-               [--search] [--optimize] [--verbose]
+```bash
+main.py [-h] [--reload_extraction] [--reload_preprocessing]
+             [--algorithm ALGORITHM] [--pkg_start PKG_START]
+             [--vectorizer VECTORIZER] [--n_clusters N_CLUSTERS]
+             [--ldepth LDEPTH] [--search] [--optimize] [--verbose]
+             DATASET
 
-Required arguments:
-  --dataset DATASET, -d DATASET
-                        The folder contraining the dataset
-  --algorithm ALGORITHM, -a ALGORITHM
-                        The algorithm to be used for clustering. Available options are 'km' and 'lda'
-  --vectorizer VECTORIZER, -v VECTORIZER
-                        The vectorizer to be used. Available options are 'tfidf' and 'count'
-  --n_clusters N_CLUSTERS, -n N_CLUSTERS
-                        The number of clusters
-  --ldepth LDEPTH, -l LDEPTH
-                        The depth of the package name hierarchy. (considered ground truth labels)
+positional arguments:
+  DATASET               The folder contraining the dataset
 
-Optional arguments:
+optional arguments:
   -h, --help            show this help message and exit
-  --reload_extraction   force redo the extraction of the dataset
+  --reload_extraction   force to redo the extraction of the dataset (do not use previous run)
   --reload_preprocessing
-                        force redo the preprocessing on the extracted
+                        force to redo the preprocessing on the extracted (do not use previous run)
+  --algorithm ALGORITHM, -a ALGORITHM
+                        The algorithm to be used for clustering. Available options are 'km' and 'lda'. Default 'lda'.
   --pkg_start PKG_START
-                        Package start to keep (useful for rejecting subpackages in a project)
+                        Package start to keep (useful for excluding certain subpackages of a project)
+  --vectorizer VECTORIZER, -v VECTORIZER
+                        The vectorizer to be used. Available options are 'tfidf' and 'count'. Default 'count'.
+  --n_clusters N_CLUSTERS, -n N_CLUSTERS
+                        The number of clusters. Default 200.
+  --ldepth LDEPTH, -l LDEPTH
+                        The depth of the package structure to be used as ground truth labels. Default 1.
   --search, -s          Enable search of tags for 'good' clusters
-  --optimize, -o        Run optimizer module from 10 to N\_CLUSTERS
-  --verbose, -V         Show output on screen (alternatively only saved in log file)
+  --optimize, -o        Run optimizer module from 10 to N_CLUSTERS
+  --verbose, -V         Show output on screen (alt only saved in log file)
+
 ```
 
-Example
+##  Example
 
 ```shell
-python main.py -d /path/to/dataset -a lda -v tf-idf -l 2 -n 100 -V -o
+python main.py /path/to/dataset -a lda -v tfidf -l 2 -n 100 -V -o
 ```
 

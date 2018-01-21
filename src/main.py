@@ -36,16 +36,16 @@ from searcher.official_googler import OfficialGoogler
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--reload_extraction', action='store_true', help='force redo the extraction of the dataset')
-parser.add_argument('--reload_preprocessing', action='store_true', help='force redo the preprocessing on the extracted')
+parser.add_argument('--reload_extraction', action='store_true', help='force to redo the extraction of the dataset (do not use previous run)')
+parser.add_argument('--reload_preprocessing', action='store_true', help='force to redo the preprocessing on the extracted (do not use previous run)')
 parser.add_argument('--dataset', '-d', type=str, required=True, help='The folder contraining the dataset')
 parser.add_argument('--algorithm', '-a', type=str, required=True, help='The algorithm to be used for clustering. ' +
                     'Available options are \'km\' and \'lda\'')
-parser.add_argument('--pkg_start', type=str, required=False, help='Package start to keep')
+parser.add_argument('--pkg_start', type=str, required=False, help='Package start to keep (useful for excluding certain subpackages of a project)')
 parser.add_argument('--vectorizer', '-v', type=str, required=True, help='The vectorizer to be used. ' +
-                    'Available options are \'tfidf\' and \'lda\'')
+                    'Available options are \'tfidf\' and \'count\'')
 parser.add_argument('--n_clusters', '-n', type=int, required=True, help='The number of clusters')
-parser.add_argument('--ldepth', '-l', type=int, required=True, help='The depth of the directories. (considered true labels)')
+parser.add_argument('--ldepth', '-l', type=int, required=True, help='The depth of the package structure to be used as ground truth labels')
 parser.add_argument('--search', '-s', action='store_true', help='Enable search of tags for \'good\' clusters')
 parser.add_argument('--optimize', '-o', action='store_true', help='Run optimizer module from 10 to N_CLUSTERS')
 parser.add_argument('--verbose', '-V', action='store_true', help='Show output on screen (alt only saved in log file)')

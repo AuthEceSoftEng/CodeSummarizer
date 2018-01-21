@@ -5,7 +5,7 @@ Summarizing Software Functionality from Source Code
 
 1. Run
 
-   ```bash
+   ```sh
    git clone git@github.com:AuthEceSoftEng/CodeSummarizer.git ${HOME}/code_summarizer && cd ${HOME}/code_summarizer/src && make setup
    ```
 
@@ -20,7 +20,7 @@ Summarizing Software Functionality from Source Code
    to get into the python virtual environment
 
 ## Usage:
-```bash
+```shell
 main.py [-h] [--reload_extraction] [--reload_preprocessing] --dataset
                DATASET --algorithm ALGORITHM [--pkg_start PKG_START]
                --vectorizer VECTORIZER --n_clusters N_CLUSTERS --ldepth LDEPTH

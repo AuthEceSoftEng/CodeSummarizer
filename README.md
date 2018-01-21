@@ -49,3 +49,10 @@ Optional arguments:
   --optimize, -o        Run optimizer module from 10 to N\_CLUSTERS
   --verbose, -V         Show output on screen (alternatively only saved in log file)
 ```
+
+Example
+
+```shell
+python main.py -d /path/to/dataset -a lda -v tf-idf -l 2 -n 100 -V -o
+```
+

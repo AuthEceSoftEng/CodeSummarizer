@@ -79,7 +79,7 @@ class LDAClust(AbsClust):
     def gen_labels(self):
         return np.argmax(self.lda_vec_data, axis=1)
 
-    def export_csv_topic_word(self, freq=False):
+    def export_csv_topic_word(self, freq=True):
         tt_dict = {}
         if freq:
             for t_idx, topic in enumerate(self.lda_topic_word):

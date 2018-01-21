@@ -1,33 +1,12 @@
-pip
-atlas
-pyqt5
-cython
-numpy
-scipy
-scikit-learn
-pandas
-gensim
-nltk
-ipython
-google-api-python-client
-matplotlib
-bs4
-urllib3[secure]
-prettyprint
-oauth2client==1.5.2
-certifi
-six
-pytagcloud
-networkx
-pygame
-simplejson
-
-####
-# Needed for runtime:
-# nltk_corpora (download using nltk.download()): stopwords, wordnet
-####
-# Needed for the virtual environment setup:
-# python3tk
-# liblapack-dev libblas-dev
-# gfortran
-# libffi-dev
+six==1.10.0
+urllib3==1.13.1
+beautifulsoup4==4.6.0
+certifi==2018.1.18
+google_api_python_client==1.6.5
+matplotlib==2.1.1
+nltk==3.2.5
+numpy==1.14.0
+pandas==0.22.0
+pytagcloud==0.3.5
+scipy==1.0.0
+scikit_learn==0.19.1

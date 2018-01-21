@@ -1,8 +1,5 @@
 from sklearn.metrics.pairwise import cosine_similarity
 
-from pytagcloud import create_tag_image, make_tags
-from pytagcloud.lang.counter import get_tag_counts
-
 import matplotlib.image as mpimg
 import matplotlib.pyplot as plt
 
@@ -87,38 +84,38 @@ def calc_topic_categories(top_terms, vectorizer):
     return len(set(kappa))
 
 
-def create_wordclouds(top_terms, indices):
-
-    #  top_terms = [['layout', 'border', 'panel', 'action', 'listener', 'selected'],
-                 #  ['socket', 'listener', 'open', 'close', 'network', 'open']]
-    #  top_terms = top_terms[0:8]
-    #  indices = indices[0:8]
-    num = len(top_terms[0])
-
-    # Transform top term corpus in a weighted top term corpus
-    weighted_top_terms = []
-    for topic in top_terms:
-        weighted_list = []
-        for ind, term in enumerate(topic):
-            for i in range(0, num - ind + 1):
-                weighted_list.append(term)
-        weighted_top_terms.append(weighted_list)
-
-    for ind, wl in enumerate(weighted_top_terms):
-        weighted_top_terms[ind] = ' '.join(weighted_top_terms[ind])
-
-    for ind, wl in enumerate(weighted_top_terms):
-        tags = make_tags(get_tag_counts(wl), maxsize=150)
-        create_tag_image(tags, '../output/topic{}.png'.format(indices[ind]), size=(1300, 1150),
-                         fontname='PT Sans Regular', layout=2, rectangular=True)
-    offset = len(top_terms)//3
-    fig, ax = plt.subplots(3, offset, figsize=(10, 8))
-    for row in range(3):
-        for idx in range(offset):
-            im = mpimg.imread('../output/topic{}.png'.format(indices[idx+row*offset]))
-            ax[row, idx].imshow(im)
-            ax[row, idx].set_xticks([])
-            ax[row, idx].set_yticks([])
-            ax[row, idx].set_title('Topic #{}'.format(indices[idx+row*offset]))
-    fig.tight_layout()
-    fig.savefig('../output/tags.eps', format='eps')
+# def create_wordclouds(top_terms, indices):
+#
+#     #  top_terms = [['layout', 'border', 'panel', 'action', 'listener', 'selected'],
+#                  #  ['socket', 'listener', 'open', 'close', 'network', 'open']]
+#     #  top_terms = top_terms[0:8]
+#     #  indices = indices[0:8]
+#     num = len(top_terms[0])
+#
+#     # Transform top term corpus in a weighted top term corpus
+#     weighted_top_terms = []
+#     for topic in top_terms:
+#         weighted_list = []
+#         for ind, term in enumerate(topic):
+#             for i in range(0, num - ind + 1):
+#                 weighted_list.append(term)
+#         weighted_top_terms.append(weighted_list)
+#
+#     for ind, wl in enumerate(weighted_top_terms):
+#         weighted_top_terms[ind] = ' '.join(weighted_top_terms[ind])
+#
+#     for ind, wl in enumerate(weighted_top_terms):
+#         tags = make_tags(get_tag_counts(wl), maxsize=150)
+#         create_tag_image(tags, '../output/topic{}.png'.format(indices[ind]), size=(1300, 1150),
+#                          fontname='PT Sans Regular', layout=2, rectangular=True)
+#     offset = len(top_terms)//3
+#     fig, ax = plt.subplots(3, offset, figsize=(10, 8))
+#     for row in range(3):
+#         for idx in range(offset):
+#             im = mpimg.imread('../output/topic{}.png'.format(indices[idx+row*offset]))
+#             ax[row, idx].imshow(im)
+#             ax[row, idx].set_xticks([])
+#             ax[row, idx].set_yticks([])
+#             ax[row, idx].set_title('Topic #{}'.format(indices[idx+row*offset]))
+#     fig.tight_layout()
+#     fig.savefig('../output/tags.eps', format='eps')

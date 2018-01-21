@@ -127,9 +127,7 @@ def create_wordclouds(tag_csv, topic_word_csv):
                 line = line.strip().split(';')
                 top_terms_str[line[0]] = []
                 for l in line[1:]:
-                    print(l)
                     term = l.split('=')
-                    print(term)
                     term = (term[0][2:] if term[0].startswith('m_') else term[0], term[1])
                     top_terms_str[line[0]].append(term)
 

@@ -3,21 +3,24 @@ Summarizing Software Functionality from Source Code
 
 ## Setup Environment:
 
-1. Run
+1. Install system dependencies.
+
+   ```bash 
+   sudo apt install python3-tk
+   ```
+
+2. Clone the repository and run `make setup` to setup the python virtual environment and install the rest of the dependencies.
 
    ```sh
    git clone git@github.com:AuthEceSoftEng/CodeSummarizer.git ${HOME}/code_summarizer && cd ${HOME}/code_summarizer/src && make setup
    ```
 
-   to setup the python virtual environment and install all dependencies
-
-2. Run
+3. Source the activate file to get into the python virtual environment.
 
    ```bash
    source ${HOME}/.code_summarizer_venv/bin/activate
    ```
 
-   to get into the python virtual environment
 
 ## Usage:
 ```

@@ -70,19 +70,19 @@ if args.verbose is True:
 
 
 # Extract the classes from the dataset. Use cached version if available or not specified otherwise.
-logging.info('Using dataset {}'.format(args.DATASET))
-dataset_name = args.DATASET.split(os.sep)[-1]
+logging.info('Using dataset {}'.format(args.PROJECT))
+dataset_name = args.PROJECT.split(os.sep)[-1]
 
 t0 = time()
 a = Extractor()
 cache_path = '../dataset/cache/' + dataset_name + '.pckl'
 
 if os.path.isfile(cache_path) and args.reload_extraction is False:
-    logging.info('########## LOADING DATASET FROM CACHE ##########')
+    logging.info('########## LOADING PROJECT FROM CACHE ##########')
     a.load(cache_path)
 else:
-    logging.info('##########     EXTRACTING DATASET     ##########')
-    dataset_path = args.DATASET
+    logging.info('##########     EXTRACTING PROJECT     ##########')
+    dataset_path = args.PROJECT
     if not os.path.exists(dataset_path):
         sys.exit('Specified dataset not found in dataset folder. Aborting')
     a.clean_dataset(dataset_path)
@@ -98,7 +98,7 @@ if os.path.isfile(cache_path) and (args.reload_preprocessing is False and args.r
     b = Preprocessor()
     b.load(cache_path)
 else:
-    logging.info('########## PREPROCESSING DATASET ##########')
+    logging.info('########## PREPROCESSING PROJECT ##########')
     b = Preprocessor(a.classes, type='class', pkg_start=args.pkg_start)
     b.save(cache_path)
 logging.info('Finished preprocessing {0:.4f}s'.format(time()-t0))

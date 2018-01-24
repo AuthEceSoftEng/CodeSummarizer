@@ -32,3 +32,4 @@ src/tags
 dataset/*
 logs/*
 output/*
+config/api_key.txt

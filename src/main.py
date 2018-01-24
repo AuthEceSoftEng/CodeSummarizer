@@ -10,13 +10,6 @@ import sys
 import csv
 from time import time, strftime
 
-import matplotlib
-
-python_version = (sys.version_info.major, sys.version_info.minor)
-required_version = (3, 5)
-if python_version >= required_version:
-    matplotlib.use('Qt5Agg')
-
 from extractor.extractor import Extractor
 from preprocessor.preprocessor import Preprocessor
 

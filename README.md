@@ -57,3 +57,6 @@ optional arguments:
 python main.py /path/to/dataset -a lda -v tfidf -l 2 -n 100 -V -o
 ```
 
+## Custom search API key
+
+This software uses the Google JSON Custom Search API. To enable the search feature using the `-s` flag, an API key has to be obtained and placed in the `config/key.txt` file. 	More details on how to obtain the API key, can be found [here](https://developers.google.com/custom-search/json-api/v1/overview). 

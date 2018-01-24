@@ -10,7 +10,11 @@ base-deps:
 	. $(VENV)/bin/activate && \
 	$(PIP) install -r requirements.txt
 
-setup: virtual-env base-deps
+setup: virtual-env base-deps nltk-setup
+
+nltk-setup: virtual-env base-deps
+	. $(VENV)/bin/activate && \
+	ipython3 -m preprocessor.nltk_setup
 
 update: virtual-env
 	. $(VENV)/bin/activate && \

@@ -38,7 +38,7 @@ from searcher.official_googler import OfficialGoogler
 parser = argparse.ArgumentParser()
 parser.add_argument('--reload_extraction', action='store_true', help='force to redo the extraction of the dataset (do not use previous run)')
 parser.add_argument('--reload_preprocessing', action='store_true', help='force to redo the preprocessing on the extracted (do not use previous run)')
-parser.add_argument('DATASET', type=str, help='The folder contraining the dataset')
+parser.add_argument('PROJECT', type=str, help='The folder contraining the project to be analyzed')
 parser.add_argument('--algorithm', '-a', default='lda', type=str, help='The algorithm to be used for clustering. ' +
                     'Available options are \'km\' and \'lda\'')
 parser.add_argument('--pkg_start', type=str, required=False, help='Package start to keep (useful for excluding certain subpackages of a project)')

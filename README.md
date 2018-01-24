@@ -20,7 +20,7 @@ Summarizing Software Functionality from Source Code
    to get into the python virtual environment
 
 ## Usage:
-```bash
+```
 main.py [-h] [--reload_extraction] [--reload_preprocessing]
              [--algorithm ALGORITHM] [--pkg_start PKG_START]
              [--vectorizer VECTORIZER] [--n_clusters N_CLUSTERS]
@@ -60,3 +60,4 @@ python main.py /path/to/dataset -a lda -v tfidf -l 2 -n 100 -V -o
 ## Custom search API key
 
 This software uses the Google JSON Custom Search API. To enable the search feature using the `-s` flag, an API key has to be obtained and placed in the `config/key.txt` file. 	More details on how to obtain the API key, can be found [here](https://developers.google.com/custom-search/json-api/v1/overview). 
+

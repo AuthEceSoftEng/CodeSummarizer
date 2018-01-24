@@ -173,5 +173,5 @@ if args.search:
             tags.append(top_tags[topic][:5])
             topic_ids.append(topic)
 
-create_wordclouds('tags.csv', file_name)
+    create_wordclouds('tags.csv', file_name)
 logging.info('Finished execution')

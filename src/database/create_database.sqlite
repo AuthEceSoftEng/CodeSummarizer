@@ -1,0 +1,127 @@
+.headers on
+PRAGMA foreign_keys = ON;
+DROP TABLE Run;
+DROP TABLE LDA;
+DROP TABLE KMeans;
+DROP TABLE Algorithm;
+DROP TABLE AlgorithmType;
+
+DROP TABLE Tfidf;
+DROP TABLE Count;
+DROP TABLE Vectorizer;
+DROP TABLE VectorizerType;
+DROP TABLE Result;
+DROP TABLE Dataset;
+
+
+CREATE TABLE Dataset(
+    DatasetID INTEGER PRIMARY KEY,
+    Name TEXT,
+    CONSTRAINT UniqueName UNIQUE (Name)
+);
+
+--INSERT INTO Dataset(Name) VALUES ("weka");
+
+
+CREATE TABLE AlgorithmType(
+    TypeID INTEGER PRIMARY KEY AUTOINCREMENT,
+    Type TEXT
+);
+
+INSERT INTO AlgorithmType(TypeID, Type) VALUES (1, "KMeans");
+INSERT INTO AlgorithmType(TypeID, Type) VALUES (2, "LDA");
+
+CREATE TABLE Algorithm(
+    AlgorithmID INTEGER PRIMARY KEY,
+    AlgorithmTypeID INTEGER REFERENCES AlgorithmType(TypeID) NOT NULL,
+    CONSTRAINT Algorithm_AltPK UNIQUE (AlgorithmID, AlgorithmTypeID)
+);
+
+--INSERT INTO Algorithm(AlgorithmID, AlgorithmTypeID) VALUES (1, 1);
+--INSERT INTO Algorithm(AlgorithmID, AlgorithmTypeID) VALUES (2, 1);
+--INSERT INTO Algorithm(AlgorithmID, AlgorithmTypeID) VALUES (3, 2);
+--INSERT INTO Algorithm(AlgorithmID, AlgorithmTypeID) VALUES (4, 2);
+
+CREATE TABLE KMeans(
+    AlgorithmID INTEGER PRIMARY KEY,
+    AlgorithmTypeID INTEGER DEFAULT 1,
+    n_clusters INTEGER,
+    init TEXT,
+    max_iter INTEGER,
+    n_init INTEGER,
+    tol FLOAT,
+    FOREIGN KEY (AlgorithmID, AlgorithmTypeID) REFERENCES Algorithm(AlgorithmID, AlgorithmTypeID)
+);
+
+--INSERT INTO KMeans(AlgorithmID, AlgorithmTypeID, n_clusters, init, max_iter, n_init, tol) VALUES (1, 1, 100, '100', 100, 10, 0.000001);
+--INSERT INTO KMeans(AlgorithmID, n_clusters, init, max_iter, n_init, tol) VALUES (2, 100, '100', 100, 10, 0.00000001);
+
+CREATE TABLE LDA(
+    AlgorithmID INTEGER PRIMARY KEY,
+    AlgorithmTypeID INTEGER DEFAULT 2,
+    n_clusters INTEGER,
+    doc_topic_prior FLOAT,
+    topic_word_prior FLOAT,
+    max_iter INTEGER,
+    learning_method TEXT,
+    learning_offset FLOAT,
+    FOREIGN KEY (AlgorithmID, AlgorithmTypeID) references Algorithm(AlgorithmID, AlgorithmTypeID)
+);
+
+--INSERT INTO LDA(AlgorithmID, AlgorithmTypeID, n_clusters, doc_topic_prior, topic_word_prior, max_iter) VALUES (3, 2, 100, 100.5, 100.5, 100);
+--INSERT INTO LDA(AlgorithmID, doc_topic_prior, n_clusters, topic_word_prior, max_iter) VALUES (4, 100, 100.5, 100.5, 100);
+
+CREATE TABLE VectorizerType(
+    TypeID INTEGER PRIMARY KEY,
+    Type TEXT
+);
+
+INSERT INTO VectorizerType(TypeID, Type) VALUES (1, "Count");
+INSERT INTO VectorizerType(TypeID, Type) VALUES (2, "Tfidf");
+
+CREATE TABLE Vectorizer(
+    VectorizerID INTEGER PRIMARY KEY,
+    VectorizerTypeID INTEGER REFERENCES VectorizerType(TypeID) NOT NULL,
+    CONSTRAINT Algorithm_AltPK UNIQUE (VectorizerID, VectorizerTypeID)
+);
+
+--INSERT INTO Vectorizer(VectorizerID, VectorizerTypeID) VALUES (1, 2);
+
+CREATE TABLE Count(
+    VectorizerID INTEGER PRIMARY KEY,
+    VectorizerTypeID INTEGER DEFAULT 1,
+    FOREIGN KEY (VectorizerID, VectorizerTypeID) REFERENCES Vectorizer(VectorizerID, VectorizerTypeID)
+);
+
+CREATE TABLE Tfidf(
+    VectorizerID INTEGER PRIMARY KEY,
+    VectorizerTypeID INTEGER DEFAULT 2,
+    FOREIGN KEY (VectorizerID, VectorizerTypeID) references Vectorizer(VectorizerID, VectorizerTypeID)
+);
+
+--INSERT INTO Tfidf(VectorizerID, VectorizerTypeID) VALUES (1, 2);
+
+CREATE TABLE Result(
+    ResultID INTEGER PRIMARY KEY,
+    DocTopicCSV TEXT,
+    TopicWordCSV TEXT
+);
+
+--INSERT INTO Result(ResultID, DocTopicCSV, TopicWordCSV) VALUES (1, "text1", "text1");
+--INSERT INTO Result(ResultID, DocTopicCSV, TopicWordCSV) VALUES (2, "text2", "text2");
+
+CREATE TABLE Run(
+    RunID INTEGER PRIMARY KEY,
+    AlgorithmID INTEGER,
+    VectorizerID INTEGER,
+    DatasetID INTEGER,
+    ResultID INTEGER,
+    FOREIGN KEY (VectorizerID) references Vectorizer(VectorizerID),
+    FOREIGN KEY (AlgorithmID) references Algorithm(AlgorithmID),
+    FOREIGN KEY (ResultID) references Result(ResultID),
+    FOREIGN KEY (DatasetID) references Dataset(DatasetID),
+    CONSTRAINT Run_AltPK UNIQUE (AlgorithmID, VectorizerID, DatasetID)
+);
+
+--INSERT INTO Run(RunID, AlgorithmID, VectorizerID, DatasetID, ResultID) VALUES (1, 1, 1, 1, 1);
+--INSERT INTO Run(RunID, AlgorithmID, VectorizerID, ResultID) VALUES (2, 3, 2, 2);

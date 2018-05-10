@@ -79,7 +79,7 @@ else:
     if not os.path.exists(dataset_path):
         sys.exit('Specified dataset not found in dataset folder. Aborting')
     a.clean_dataset(dataset_path)
-    a.extr_folder_classes(dataset_path)
+    a.extract_classes_from_project(dataset_path)
     a.save(cache_path)
 logging.info('Finished extracting {0:.4f}s'.format(time()-t0))
 

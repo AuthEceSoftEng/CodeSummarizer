@@ -34,13 +34,13 @@ class Extractor(object):
 
         self.classes = []
 
-    def extr_folder_classes(self, folder_name):
+    def extract_classes_from_project(self, folder_name):
 
         """
-        Extract the class_objs for a project contained in a folder, and consisting of java class files.
+        Extract ClassObj objects for a project contained in a folder, and consisting of Java class files.
         """
-        # Trying to use the parse_folder method, as it is much faster. If parse_folder returns empty ast due to
-        # lack of memory (because dataset is too large) use parse_file instead.
+        # Trying to use the parse_folder method, as it is much faster. If parse_folder returns an empty ast due to
+        # lack of memory (because dataset is too large), iterate over each file and use parse_file instead.
 
         logger.info('Using ASTExtractor to produce the JSON')
         ast_extractor = ASTExtractor(ASTE_JAR, ASTE_PROPERTIES)
@@ -281,7 +281,7 @@ def main():
 
     a = Extractor()
     a.clean_dataset(sys.argv[1])
-    a.extr_folder_classes(sys.argv[1])
+    a.extract_classes_from_project(sys.argv[1])
     for cla in a.classes:
         print(cla.package)
     a.save('dataset/cache/' + sys.argv[1].split('/')[-1] + '.pckl')

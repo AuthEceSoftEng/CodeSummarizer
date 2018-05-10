@@ -8,14 +8,15 @@ Summarizing Software Functionality from Source Code
    ```bash 
    sudo apt install python3-tk
    ```
+2. Install official Java SDK 8 (for the ASTExtractor dependency)
 
-2. Clone the repository and run `make setup` to setup the python virtual environment and install the rest of the dependencies.
+3. Clone the repository and run `make setup` to setup the python virtual environment and install the rest of the dependencies.
 
    ```sh
    git clone git@github.com:AuthEceSoftEng/CodeSummarizer.git ${HOME}/code_summarizer && cd ${HOME}/code_summarizer/src && make setup
    ```
 
-3. Source the activate file to get into the python virtual environment.
+4. Source the activate file to get into the python virtual environment.
 
    ```bash
    source ${HOME}/.code_summarizer_venv/bin/activate

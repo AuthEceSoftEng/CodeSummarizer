@@ -38,6 +38,9 @@ class Extractor(object):
 
         """
         Extract ClassObj objects for a project contained in a folder, and consisting of Java class files.
+
+        :param folder_name: Absolute path to folder, where a Java project is contained
+        :return None
         """
         # Trying to use the parse_folder method, as it is much faster. If parse_folder returns an empty ast due to
         # lack of memory (because dataset is too large), iterate over each file and use parse_file instead.
@@ -57,9 +60,9 @@ class Extractor(object):
                     try:
                         json_ast = json.loads(ast)
                     except ValueError:
-                        logger.error('ValueError in generated JSON for file: ' + file_path)
+                        logger.error('ValueError in generated JSON for file: {}'.format(file_path))
                         continue
-                    self.extr_class(json_ast, file_path=file_path)
+                    self.extract_class_from_json(json_ast, file_path=file_path)
         else:
             logger.info('JSON produced successfully')
             json_ast = json.loads(ast)
@@ -67,38 +70,38 @@ class Extractor(object):
             logger.info('Extracting classes from JSON')
             files = json_ast['folder']['file']
             for file in files:
-                self.extr_class(file['ast'], file_path=file['path'])
+                self.extract_class_from_json(file['ast'], file_path=file['path'])
 
-    def extr_class(self, json_str, file_path=None,
-                   omit_embedded_classes=True):
+    def extract_class_from_json(self, json_str, file_path=None, omit_embedded_classes=True):
 
-        '''Extract the class_obj for a class contained in a json.'''
+        """
+        Extract the ClassObj for a class contained in a JSON string.
 
-        # set useful json location variables
+        :param json_str: A JSON string to be parsed
+        :param file_path: The path to the file, to which the JSON string refers
+        :param omit_embedded_classes: Discard embedded classes (Java feature not yet examined)
+        :return:
+        """
+
         compilation_unit = json_str['CompilationUnit']
         if not isinstance(compilation_unit, dict):
-            logger.warning('CompilationUnit is not a dictionary in File: {}'
-                           .format(file_path))
+            logger.warning('CompilationUnit is not a dictionary in File: {}'.format(file_path))
             return
 
         if 'PackageDeclaration' in compilation_unit.keys():
             package_dec = compilation_unit['PackageDeclaration']
         else:
-            # if the class has no packageDeclaration return without
-            # adding the ClassObj to the list
-            logger.warning('WARNING 1 PackageDeclaration not in File: {}'
-                           .format(file_path))
+            # if the class has no packageDeclaration return without adding the ClassObj to the list
+            logger.warning('WARNING 1 PackageDeclaration not in File: {}'.format(file_path))
             return
 
         if 'TypeDeclaration' in compilation_unit.keys():
             type_dec = compilation_unit['TypeDeclaration']
         elif 'AnnotationTypeDeclaration' in compilation_unit.keys():
-            logger.warning('WARNING 2 AnnotationTypeDeclaration is in file: {}'
-                           .format(file_path))
+            logger.warning('WARNING 2 AnnotationTypeDeclaration is in file: {}'.format(file_path))
             type_dec = compilation_unit['AnnotationTypeDeclaration']
         else:
-            logger.warning('WARNING 3 No TypeDeclaration in File: {}'
-                           .format(file_path))
+            logger.warning('WARNING 3 No TypeDeclaration in File: {}'.format(file_path))
             return
 
         # Can't handle list type declarations yet!
@@ -108,8 +111,7 @@ class Extractor(object):
             cl = ClassObj(type_dec['SimpleName'])
             cl.set_path(file_path)
 
-            # Add the package information to the ClassObj
-            # first argument of the arrays is always the word package
+            # Add the package information to the ClassObj first argument of the arrays is always the word package
             cl.set_package(str(package_dec).split()[1].strip(';'))
 
             # Append the import declaration to the ClassObj
@@ -117,7 +119,7 @@ class Extractor(object):
                 import_dec = compilation_unit['ImportDeclaration']
                 temp_words = []
                 self.json2words(import_dec, temp_words)
-                temp_words = list(filter(('import').__ne__, temp_words))
+                temp_words = list(filter('import'.__ne__, temp_words))
                 temp_words = [w.strip(';') for w in temp_words]
                 cl.add_import(temp_words)
 
@@ -127,7 +129,7 @@ class Extractor(object):
                 self.json2words(type_dec['Modifier'], modif)
                 cl.add_modifier(modif)
 
-            # Add the javadoc to the ClassObj
+            # Add the Javadoc to the ClassObj
             if 'Javadoc' in type_dec.keys():
                 temp_words = []     # init to null,bc json2words is recursive
                 self.json2words(type_dec['Javadoc'], temp_words)
@@ -150,14 +152,11 @@ class Extractor(object):
                         cl = self.extr_method(methods, cl)
                 else:
                     cl = self.extr_method(method_dec, cl)
-
         elif isinstance(type_dec, list):
             # if the class has embedded classes return without
             # adding the ClassObj to the list
-            logger.warning('WARNING 4 TypeDeclaration is List in File: ' +
-                           '{}, omit is set to {}'
-                           .format(file_path,
-                                   omit_embedded_classes))
+            logger.warning('WARNING 4 TypeDeclaration is List in File: {}, omit is set to {}'
+                           .format(file_path, omit_embedded_classes))
             return
 
         self.classes.append(cl)

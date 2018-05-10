@@ -1,4 +1,8 @@
-''' ... '''
+"""
+Class facilitating the extraction of classes from a Java project or library (located in a folder). For every class in
+the project, a ClassObj object is created, containing its methods, variables, docstring, comments and various other
+data in an organized and easy-to-access manner.
+"""
 
 from __future__ import absolute_import
 
@@ -18,27 +22,19 @@ logger = logging.getLogger('Extractor')
 
 class Extractor(object):
 
-    '''Extract a ClassObj objects from a file, or a folder
-    containing class files in java.
-    '''
+    """
+    Extract a ClassObj objects from a file, or a folder containing class files in java.
+    """
+
     def __init__(self):
 
-        '''Initialize the arrays of the object.'''
+        """
+        Initialize the arrays of the object.
+        """
 
         self.classes = []
 
-    def clean_dataset(self, folder_name):
 
-        for root, dirs, files in os.walk(folder_name):
-            for index, file in enumerate(files):
-                if not file.endswith(".java"):
-                    print(os.path.join(root, file))
-                    os.remove(os.path.join(root, file))
-                elif os.path.getsize(os.path.join(root, file)) == 0:
-                    print(os.path.join(root, file), '...EMPTY FILE')
-                    os.remove(os.path.join(root, file))
-
-        print(sum([len(files) for r, d, files in os.walk(folder_name)]))
 
     def extr_folder_classes(self, folder_name):
 

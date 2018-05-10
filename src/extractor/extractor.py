@@ -34,49 +34,37 @@ class Extractor(object):
 
         self.classes = []
 
-
-
     def extr_folder_classes(self, folder_name):
 
-        '''Extract the class_objs for a project contained in a folder,
-        and consisting of java class files.
-        '''
-        # Trying to use the parse_folder method.
-        # if parse_folder returns empty ast due to lack of memory
-        # use parse_file.
+        """
+        Extract the class_objs for a project contained in a folder, and consisting of java class files.
+        """
+        # Trying to use the parse_folder method, as it is much faster. If parse_folder returns empty ast due to
+        # lack of memory (because dataset is too large) use parse_file instead.
 
         logger.info('Using ASTExtractor to produce the JSON')
         ast_extractor = ASTExtractor(ASTE_JAR, ASTE_PROPERTIES)
         ast = ast_extractor.parse_folder(folder_name, "JSON")
 
         if ast == '':
-            logger.warning('ASTExtractor does not have enough memory to' +
-                           ' create a JSON for the whole project. Using' +
+            logger.warning('ASTExtractor does not have enough memory to create a JSON for the whole project. Using' +
                            ' ASTExtractor per java file.')
             for root, dirs, files in os.walk(folder_name):
                 for index, file in enumerate(files):
-                    if not file.endswith(".java"):
-                        print(os.path.join(root, file))
-                        os.remove(os.path.join(root, file))
-                    elif os.path.getsize(os.path.join(root, file)) == 0:
-                        print(os.path.join(root, file), '...EMPTY FILE')
-                        os.remove(os.path.join(root, file))
-                    else:
-                        file_path = os.path.join(root, file)
-                        ast = ast_extractor.parse_file(file_path, "JSON")
-                        try:
-                            json_ast = json.loads(ast)
-                        except ValueError:
-                            print(file_path)
-                            continue
-                        self.extr_class(json_ast,
-                                        file_path=file_path)
 
+                    file_path = os.path.join(root, file)
+                    ast = ast_extractor.parse_file(file_path, "JSON")
+                    try:
+                        json_ast = json.loads(ast)
+                    except ValueError:
+                        logger.error('ValueError in generated JSON for file: ' + file_path)
+                        continue
+                    self.extr_class(json_ast, file_path=file_path)
         else:
             logger.info('JSON produced successfully')
             json_ast = json.loads(ast)
 
-            logger.info('Processing files in json')
+            logger.info('Extracting classes from JSON')
             files = json_ast['folder']['file']
             for file in files:
                 self.extr_class(file['ast'], file_path=file['path'])

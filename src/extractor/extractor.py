@@ -10,6 +10,7 @@ import json
 import logging
 import pickle
 import os
+
 import six
 
 from lib.astextractor.astextractor import ASTExtractor
@@ -29,7 +30,7 @@ class Extractor(object):
     def __init__(self):
 
         """
-        Initialize the arrays of the object.
+        Initialize the variables of the object.
         """
 
         self.classes = []
@@ -181,49 +182,27 @@ class Extractor(object):
             return words.extend(json_str.split())
         return words
 
-    def extract_block(self, json_str, words):
-
-        """
-        Navigate through a JSON structure containing a function block recursively and append the variable names and 
-        types contained in every leaf node to a list.
-
-        :param json_str: the JSON structure to be navigated
-        :param words: the list to which the words will be appended.
-
-        :return words: list of words
-        """
-
-        if isinstance(json_str, dict):
-            for key in json_str:
-                if key == 'SimpleName' or key == 'ParameterizedType' or key == 'VariableDeclarationFragment':
-                    words.extend(self.extract_list(json_str[key]))
-                self.extract_block(json_str[key], words)
-        elif isinstance(json_str, list):
-            for entry in json_str:
-                self.extract_block(entry, words)
-        return words
-
     def extract_method(self, json_str, cl):
 
+        name = []
         if 'SimpleName' in json_str.keys():
-            name = self.extract_list(json_str['SimpleName'])
+            self.json2words(json_str['SimpleName'], name)
 
-            if name == []:
-                logger.warning('A method has no name (probably enum)' +
-                               ' in class: {}. Excluding it'
-                               .format(cl.path))
+            if name is []:
+                logger.warning('A method has no name (probably enum) in class: {}. Excluding it'.format(cl.path))
                 return cl
+
             javadoc = []
             if 'Javadoc' in json_str.keys():
                 self.json2words(json_str['Javadoc'], javadoc)
 
             modifier = []
             if 'Modifier' in json_str.keys():
-                modifier = self.extract_list(json_str['Modifier'])
+                self.json2words(json_str['Modifier'], modifier)
 
             block = []
             if 'Block' in json_str.keys():
-                self.extract_block(json_str['Block'], block)
+                self.json2words(json_str['Block'], block)
                 block = [word for word in block if word is not None]
 
             cl.add_method(name, javadoc, modifier, block)
@@ -232,8 +211,9 @@ class Extractor(object):
 
     def extract_variable(self, json_str, cl):
 
+        name = []
         if 'VariableDeclarationFragment' in json_str.keys():
-            name = self.extract_list(json_str['VariableDeclarationFragment'])
+            self.json2words(json_str['VariableDeclarationFragment'], name)
 
         javadoc = []
         if 'Javadoc' in json_str.keys():
@@ -241,26 +221,15 @@ class Extractor(object):
 
         modifier = []
         if 'Modifier' in json_str.keys():
-            modifier = self.extract_list(json_str['Modifier'])
+            self.json2words(json_str['Modifier'], modifier)
 
-        type = []
+        variable_type = []
         if 'SimpleType' in json_str.keys():
-            self.json2words(json_str['SimpleType'], type)
+            self.json2words(json_str['SimpleType'], variable_type)
 
-        cl.add_variable(name, javadoc, modifier, type)
+        cl.add_variable(name, javadoc, modifier, variable_type)
 
         return cl
-
-    def extract_list(self, json_str):
-
-        if isinstance(json_str, list):
-            return [word for word in json_str if not isinstance(word, bool)]
-        elif isinstance(json_str, six.string_types):
-            return json_str.split()
-        elif json_str is None:
-            return []
-        else:
-            return []
 
     def save(self, file_name):
 

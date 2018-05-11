@@ -69,12 +69,12 @@ class ClassObj(object):
         self.method_javadoc.append(jdoc)
         self.method_block.append(block)
 
-    def add_variable(self, name, jdoc, modif, type):
+    def add_variable(self, name, jdoc, modif, variable_type):
 
         self.var_names.extend(name)
         self.var_modif.append(modif)
         self.var_javadoc.append(jdoc)
-        self.var_type.append(type)
+        self.var_type.append(variable_type)
 
     def get_package(self):
         return self.package

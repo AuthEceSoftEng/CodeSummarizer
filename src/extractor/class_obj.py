@@ -30,20 +30,20 @@ class ClassObj(object):
         print('Modifier:', self.modif)
         print('Name:    ', self.name)
         print()
-        print('Javadoc: ', ' '.join(self.javadoc))
+        print('Javadoc: ', self.javadoc)
         print()
 
         for index, var_j in enumerate(self.var_javadoc):
             print('Var Modifier:    ', self.var_modif[index])
             print('Var Type:        ', self.var_type[index])
             print('Var Name:        ', self.var_names[index])
-            print('Var Javadoc:     ', ' '.join(var_j))
+            print('Var Javadoc:     ', self.var_javadoc[index])
             print()
 
         for index, method_j in enumerate(self.method_javadoc):
-            print('Metho Modifier: ', self.method_modif[index])
+            print('Method Modifier: ', self.method_modif[index])
             print('Method Name:    ', self.method_names[index])
-            print('Method Javadoc: ', ' '.join(method_j))
+            print('Method Javadoc: ', self.method_javadoc[index])
             print('Method Block:   ', self.method_block[index])
             print()
         return ' '
@@ -69,7 +69,7 @@ class ClassObj(object):
         self.method_javadoc.append(jdoc)
         self.method_block.append(block)
 
-    def add_var(self, name, jdoc, modif, type):
+    def add_variable(self, name, jdoc, modif, type):
 
         self.var_names.extend(name)
         self.var_modif.append(modif)

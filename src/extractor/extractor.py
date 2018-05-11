@@ -140,21 +140,20 @@ class Extractor(object):
                 field_dec = type_dec['FieldDeclaration']
                 if isinstance(field_dec, list):
                     for var in field_dec:
-                        cl = self.extr_var(var, cl)
+                        cl = self.extract_variable(var, cl)
                 else:
-                    cl = self.extr_var(field_dec, cl)
+                    cl = self.extract_variable(field_dec, cl)
 
             # Append the method names and method bows to the classobj
             if 'MethodDeclaration' in type_dec.keys():
                 method_dec = type_dec['MethodDeclaration']
                 if isinstance(method_dec, list):
                     for methods in method_dec:
-                        cl = self.extr_method(methods, cl)
+                        cl = self.extract_method(methods, cl)
                 else:
-                    cl = self.extr_method(method_dec, cl)
+                    cl = self.extract_method(method_dec, cl)
         elif isinstance(type_dec, list):
-            # if the class has embedded classes return without
-            # adding the ClassObj to the list
+            # if the class has embedded classes return without adding the ClassObj to the list
             logger.warning('WARNING 4 TypeDeclaration is List in File: {}, omit is set to {}'
                            .format(file_path, omit_embedded_classes))
             return
@@ -163,18 +162,14 @@ class Extractor(object):
 
     def json2words(self, json_str, words):
 
-        '''Navigate through a JSON structure and append the
-        words contained in every leaf node to an array.
+        """
+        Navigate through a JSON structure recursively and append the words contained in every leaf node to an list.
 
-        Parameters
-        ----------
-        json_str : the JSON structure to be navigated
-        words : the list to which the words will be appended.
+        :param json_str: the JSON structure to be navigated
+        :param words: the list to which the words will be appended.
 
-        Returns
-        -------
-        words : list of words
-        '''
+        :return words: list of words
+        """
 
         if isinstance(json_str, dict):
             for key in json_str:
@@ -186,20 +181,29 @@ class Extractor(object):
             return words.extend(json_str.split())
         return words
 
-    def extr_block(self, json_str, names):
+    def extract_block(self, json_str, words):
+
+        """
+        Navigate through a JSON structure containing a function block recursively and append the variable names and 
+        types contained in every leaf node to a list.
+
+        :param json_str: the JSON structure to be navigated
+        :param words: the list to which the words will be appended.
+
+        :return words: list of words
+        """
 
         if isinstance(json_str, dict):
             for key in json_str:
-                if key == 'SimpleName' or key == 'ParameterizedType' or \
-                        key == 'VariableDeclarationFragment':
-                    names.extend(self.extract_list(json_str[key]))
-                self.extr_block(json_str[key], names)
+                if key == 'SimpleName' or key == 'ParameterizedType' or key == 'VariableDeclarationFragment':
+                    words.extend(self.extract_list(json_str[key]))
+                self.extract_block(json_str[key], words)
         elif isinstance(json_str, list):
             for entry in json_str:
-                self.extr_block(entry, names)
-        return names
+                self.extract_block(entry, words)
+        return words
 
-    def extr_method(self, json_str, cl):
+    def extract_method(self, json_str, cl):
 
         if 'SimpleName' in json_str.keys():
             name = self.extract_list(json_str['SimpleName'])
@@ -209,41 +213,41 @@ class Extractor(object):
                                ' in class: {}. Excluding it'
                                .format(cl.path))
                 return cl
-            jdoc = []
+            javadoc = []
             if 'Javadoc' in json_str.keys():
-                self.json2words(json_str['Javadoc'], jdoc)
+                self.json2words(json_str['Javadoc'], javadoc)
 
-            modif = []
+            modifier = []
             if 'Modifier' in json_str.keys():
-                modif = self.extract_list(json_str['Modifier'])
+                modifier = self.extract_list(json_str['Modifier'])
 
             block = []
             if 'Block' in json_str.keys():
-                self.extr_block(json_str['Block'], block)
+                self.extract_block(json_str['Block'], block)
                 block = [word for word in block if word is not None]
 
-            cl.add_method(name, jdoc, modif, block)
+            cl.add_method(name, javadoc, modifier, block)
 
         return cl
 
-    def extr_var(self, json_str, cl):
+    def extract_variable(self, json_str, cl):
 
         if 'VariableDeclarationFragment' in json_str.keys():
             name = self.extract_list(json_str['VariableDeclarationFragment'])
 
-        jdoc = []
+        javadoc = []
         if 'Javadoc' in json_str.keys():
-            self.json2words(json_str['Javadoc'], jdoc)
+            self.json2words(json_str['Javadoc'], javadoc)
 
-        modif = []
+        modifier = []
         if 'Modifier' in json_str.keys():
-            modif = self.extract_list(json_str['Modifier'])
+            modifier = self.extract_list(json_str['Modifier'])
 
         type = []
         if 'SimpleType' in json_str.keys():
             self.json2words(json_str['SimpleType'], type)
 
-        cl.add_var(name, jdoc, modif, type)
+        cl.add_variable(name, javadoc, modifier, type)
 
         return cl
 
@@ -277,13 +281,14 @@ class Extractor(object):
 def main():
 
     import sys
+    from extractor.tools import clean_dataset
 
     a = Extractor()
-    a.clean_dataset(sys.argv[1])
+    clean_dataset(sys.argv[1])
     a.extract_classes_from_project(sys.argv[1])
     for cla in a.classes:
-        print(cla.package)
-    a.save('dataset/cache/' + sys.argv[1].split('/')[-1] + '.pckl')
+        print(cla)
+    a.save('test.pckl')
 
 
 if __name__ == '__main__':

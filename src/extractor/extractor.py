@@ -184,6 +184,7 @@ class Extractor(object):
 
     def extract_method(self, json_str, cl):
 
+        #TODO create a tool function for the extraction of every sub-field (i.e. Javadoc, Modifier etc.)
         name = []
         if 'SimpleName' in json_str.keys():
             self.json2words(json_str['SimpleName'], name)

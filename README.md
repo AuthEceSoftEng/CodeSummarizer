@@ -8,7 +8,7 @@ Summarizing Software Functionality from Source Code
    ```bash 
    sudo apt install python3-tk
    ```
-2. Install official Java SDK 8 (for the ASTExtractor dependency)
+2. Install official Java 8 (for the ASTExtractor dependency)
 
 3. Clone the repository and run `make setup` to setup the python virtual environment and install the rest of the dependencies.
 

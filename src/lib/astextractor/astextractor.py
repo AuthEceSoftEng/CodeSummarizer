@@ -16,7 +16,7 @@ class _ASTExtractor(object):
 		:param path_to_ASTExtractor_jar: the path to the ASTExtractor jar.
 		:param path_to_ASTExtractor_properties: the path to the ASTExtractor properties file.
 		"""
-		self.cmd = ['java', '-Xmx4096m', '-cp', path_to_ASTExtractor_jar, 'astextractor.PythonBinder', path_to_ASTExtractor_properties]
+		self.cmd = ['java', '-Xmx1024m', '-cp', path_to_ASTExtractor_jar, 'astextractor.PythonBinder', path_to_ASTExtractor_properties]
 		self.proc = subprocess.Popen(self.cmd, stdin=PIPE, stdout=PIPE, stderr=STDOUT)
 		self.nummessages = 0
 		line = self.send_message("START_OF_TRANSMISSION")

@@ -1,5 +1,5 @@
 six==1.10.0
-urllib3==1.13.1
+urllib3==1.26.5
 beautifulsoup4==4.6.0
 certifi==2018.1.18
 google_api_python_client==1.6.5
